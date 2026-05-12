@@ -83,14 +83,14 @@
     letter-spacing: 4px;
     font-family: 'Pretendard', sans-serif;
   }
-  nav { display: flex; gap: 40px; }
+  nav { display: flex; gap: 0; }
   nav a {
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 400;
     color: var(--gray-dark);
     text-decoration: none;
     cursor: pointer;
-    padding: 4px 0;
+    padding: 4px 40px;
     transition: color 0.2s, font-weight 0.1s;
     letter-spacing: 1px;
   }
@@ -196,12 +196,13 @@
     z-index: 10;
     max-width: 1100px;
     margin: 0 auto;
-    transform: translateY(-50px);
+    transform: translateY(-50%);
+    margin-bottom: -100px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
   }
   .stats-bar-wrap {
-    padding: 0 40px;
+    padding: 0 24px;
   }
   .stat-item {
     padding: 60px 24px;
@@ -291,6 +292,13 @@
     top: 68px;
     z-index: 50;
   }
+  /* Product/About page: tab bar border extends full width, buttons constrained to 1100px */
+  #products-tabs-bar .tabs-inner,
+  #about-tabs-bar .tabs-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0;
+  }
   .tabs-inner {
     max-width: 1100px;
     margin: 0 auto;
@@ -369,7 +377,15 @@
     padding: 40px 24px;
     text-align: center;
   }
-  .contact-icon { font-size: 36px; margin-bottom: 12px; display: block; }
+  .contact-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    width: 40px;
+    height: 40px;
+  }
+  .contact-icon svg { width: 40px; height: 40px; }
   .contact-type { font-size: 12px; color: var(--gray-light); margin-bottom: 8px; }
   .contact-value { font-size: 14px; font-weight: 500; color: var(--black); }
 
@@ -420,13 +436,14 @@
     top: 68px;
     z-index: 50;
   }
+  .product-scroll-section .product-section-title,
   .product-section-title {
-    font-size: 20px;
-    font-weight: 800;
-    line-height: 1;
-    display: block;
-    margin: 0;
-    padding-bottom: 80px;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    display: block !important;
+    margin: 0 !important;
+    padding-bottom: 20px !important;
   }
   .product-category { margin-bottom: 56px; }
 
@@ -456,7 +473,7 @@
   .product-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .product-name {
     padding: 10px 0 0;
-    font-size: 12px;
+    font-size: 15px;
     color: var(--gray-dark);
     text-align: left;
     background: transparent;
@@ -502,23 +519,24 @@
       border-bottom: 1px solid var(--gray-border);
       letter-spacing: 1px;
       width: 100%;
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(0,0,0,0.05);
+      pointer-events: auto;
     }
     nav#main-nav a:hover, nav#main-nav a.active {
       background: #F9F9F9;
     }
 
-    /* Backdrop when menu open */
+    /* Lock body scroll when menu open - preserves scroll position */
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    /* Backdrop - hidden (no dim effect) */
     .menu-backdrop {
       display: none;
-      position: fixed;
-      top: 68px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.4);
-      z-index: 140;
     }
-    .menu-backdrop.show { display: block; }
+    .menu-backdrop.show { display: none; }
   }
   @media (max-width: 480px) {
     .top-bar-inner { gap: 12px; font-size: 11px; }
@@ -731,17 +749,17 @@
       <h2 class="section-title">연락처</h2>
       <div class="contact-grid">
         <div class="contact-card">
-          <span class="contact-icon">✉️</span>
+          <span class="contact-icon"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.5835 35.75V8.25H39.4168V35.75H4.5835ZM22.0002 23.0225L7.3335 13.6441V33H36.6668V13.6441L22.0002 23.0225ZM22.0002 20.1667L36.3849 11H7.61537L22.0002 20.1667ZM7.3335 13.6441V11V33V13.6441Z" fill="#605E68"/></svg></span>
           <div class="contact-type">E-mail</div>
           <div class="contact-value">sekwangfastener@gmail.com</div>
         </div>
         <div class="contact-card">
-          <span class="contact-icon">📞</span>
+          <span class="contact-icon"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M35.8873 37.5832C32.3264 37.5832 28.7801 36.7904 25.2485 35.2049C21.7172 33.6197 18.4884 31.3639 15.5621 28.4376C12.6477 25.5113 10.3948 22.2813 8.8035 18.7475C7.21217 15.2138 6.4165 11.6687 6.4165 8.11234V6.4165H15.8935L17.5187 14.765L12.4349 19.7013C13.1893 21.0222 13.9966 22.2496 14.8567 23.3835C15.7172 24.5178 16.6268 25.555 17.5856 26.4952C18.5188 27.4519 19.5566 28.3555 20.6991 29.2062C21.8413 30.0572 23.1116 30.8752 24.5101 31.6601L29.5623 26.5199L37.5832 28.152V37.5832H35.8873ZM11.1337 17.0993L14.5643 13.8273L13.644 9.1665H9.19492C9.28873 10.5531 9.49727 11.9029 9.82055 13.2159C10.1438 14.5285 10.5815 15.823 11.1337 17.0993ZM27.0837 32.9435C28.2588 33.4864 29.5122 33.9136 30.8438 34.225C32.1755 34.5363 33.5052 34.7203 34.8332 34.7768V30.3731L30.4895 29.5023L27.0837 32.9435Z" fill="#605E68"/></svg></span>
           <div class="contact-type">대표전화</div>
           <div class="contact-value">031) 573 – 5547<br>031) 573 – 5548</div>
         </div>
         <div class="contact-card">
-          <span class="contact-icon">📠</span>
+          <span class="contact-icon"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M29.3329 15.2305V9.73047H14.6662V15.2305H11.9162V6.98047H32.0829V15.2305H29.3329ZM32.6471 22.5638C33.1666 22.5638 33.602 22.3881 33.9534 22.0367C34.3048 21.6853 34.4804 21.2499 34.4804 20.7305C34.4804 20.211 34.3048 19.7756 33.9534 19.4242C33.602 19.0728 33.1666 18.8971 32.6471 18.8971C32.1277 18.8971 31.6923 19.0728 31.3409 19.4242C30.9895 19.7756 30.8138 20.211 30.8138 20.7305C30.8138 21.2499 30.9895 21.6853 31.3409 22.0367C31.6923 22.3881 32.1277 22.5638 32.6471 22.5638ZM29.3329 34.8329V27.006H14.6662V34.8329H29.3329ZM32.0829 37.5829H11.9162V30.2496H5.11182V15.2305H38.8873V30.2496H32.0829V37.5829ZM36.1373 27.4996V17.9805H7.86182V27.4996H11.9162V24.256H32.0829V27.4996H36.1373Z" fill="#605E68"/></svg></span>
           <div class="contact-type">Fax</div>
           <div class="contact-value">031) 571 – 3567</div>
         </div>
@@ -754,11 +772,11 @@
     <div class="container">
       <h2 class="section-title">오시는 길</h2>
       <div class="map-address">
-        <span>📍</span> 경기도 남양주시 진접읍 부마로 54-16
+        <span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;"><path d="M13.2779 11.3355C13.6312 10.9823 13.8079 10.5564 13.8079 10.0578C13.8079 9.55908 13.6312 9.13308 13.2779 8.77975C12.9247 8.42658 12.4988 8.25 12.0001 8.25C11.5015 8.25 11.0756 8.42658 10.7224 8.77975C10.3691 9.13308 10.1924 9.55908 10.1924 10.0578C10.1924 10.5564 10.3691 10.9823 10.7224 11.3355C11.0756 11.6887 11.5015 11.8652 12.0001 11.8652C12.4988 11.8652 12.9247 11.6887 13.2779 11.3355ZM12.0001 19.5135C13.9565 17.7622 15.4536 16.0823 16.4914 14.474C17.5292 12.8657 18.0481 11.457 18.0481 10.248C18.0481 8.425 17.469 6.92633 16.3106 5.752C15.1523 4.57767 13.7155 3.9905 12.0001 3.9905C10.2848 3.9905 8.84798 4.57767 7.68965 5.752C6.53131 6.92633 5.95215 8.425 5.95215 10.248C5.95215 11.457 6.47107 12.8657 7.5089 14.474C8.54673 16.0823 10.0438 17.7622 12.0001 19.5135ZM12.0001 21.5095C9.48348 19.3288 7.59631 17.2994 6.33865 15.4212C5.08098 13.5429 4.45215 11.8185 4.45215 10.248C4.45215 7.94033 5.19857 6.07208 6.6914 4.64325C8.1844 3.21442 9.95398 2.5 12.0001 2.5C14.0463 2.5 15.8159 3.21442 17.3089 4.64325C18.8017 6.07208 19.5481 7.94033 19.5481 10.248C19.5481 11.8185 18.9193 13.5429 17.6616 15.4212C16.404 17.2994 14.5168 19.3288 12.0001 21.5095Z" fill="#111"/></svg></span> 경기도 남양주시 진접읍 부마로 54-16
       </div>
       <div class="map-placeholder">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3157.0!2d127.178!3d37.738!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357cb6e9c6e0e0e1%3A0x0!2z6rK96re4!5e0!3m2!1sko!2skr!4v1"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1415.404821258199!2d127.19948382065117!3d37.749798470281!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ccebcd7684049%3A0xcc0a6eff62b79f19!2z7IS46rSR7KCV67CA!5e1!3m2!1sko!2sus!4v1778593041152!5m2!1sko!2sus"
           allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
         </iframe>
       </div>
@@ -873,15 +891,44 @@
 
 <script>
   // Mobile menu
+  let savedScrollY = 0;
+
   function toggleMenu() {
-    document.getElementById('hamburger').classList.toggle('open');
-    document.getElementById('main-nav').classList.toggle('open');
-    document.getElementById('menu-backdrop').classList.toggle('show');
+    const isOpen = document.getElementById('main-nav').classList.contains('open');
+    if (isOpen) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  }
+  function openMenu() {
+    savedScrollY = window.scrollY;
+    document.getElementById('hamburger').classList.add('open');
+    document.getElementById('main-nav').classList.add('open');
+    document.body.classList.add('menu-open');
+    // Lock scroll position visually
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${savedScrollY}px`;
+    document.body.style.width = '100%';
+    // Close on scroll attempt
+    window.addEventListener('wheel', closeMenuOnScroll, { passive: true });
+    window.addEventListener('touchmove', closeMenuOnScroll, { passive: true });
   }
   function closeMenu() {
     document.getElementById('hamburger').classList.remove('open');
     document.getElementById('main-nav').classList.remove('open');
-    document.getElementById('menu-backdrop').classList.remove('show');
+    document.body.classList.remove('menu-open');
+    // Restore scroll position
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    window.scrollTo(0, savedScrollY);
+    // Remove scroll listeners
+    window.removeEventListener('wheel', closeMenuOnScroll);
+    window.removeEventListener('touchmove', closeMenuOnScroll);
+  }
+  function closeMenuOnScroll() {
+    closeMenu();
   }
 
   // Nav link click (closes mobile menu and navigates)
