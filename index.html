@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>세광정밀 - 특수 볼트 전문 기업</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #111111;
+    --dark: #1a1a1a;
+    --gray-dark: #333;
+    --gray-mid: #666;
+    --gray-light: #999;
+    --gray-border: #e0e0e0;
+    --bg-light: #f7f7f7;
+    --white: #ffffff;
+    --accent: #2a2a2a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--black);
+    background: var(--white);
+    line-height: 1.6;
+  }
+
+  /* ===== TOP BAR ===== */
+  .top-bar {
+    background: var(--black);
+    color: #aaa;
+    font-size: 12px;
+    padding: 8px 0;
+  }
+  .top-bar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .top-bar span { display: flex; align-items: center; gap: 6px; }
+  .top-bar .icon { font-size: 13px; }
+
+  /* ===== HEADER ===== */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--black);
+  }
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+  }
+  .logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    font-family: 'Noto Serif KR', serif;
+  }
+  nav { display: flex; gap: 40px; }
+  nav a {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--gray-dark);
+    text-decoration: none;
+    cursor: pointer;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    letter-spacing: 1px;
+  }
+  nav a:hover, nav a.active {
+    color: var(--black);
+    border-bottom-color: var(--black);
+  }
+
+  /* ===== PAGES ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative;
+    height: 480px;
+    background: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.35;
+  }
+  .hero-bg-home {
+    background-image: url('https://images.unsplash.com/photo-1581093458791-9d59e6c6d6bb?w=1400&q=80&auto=format');
+  }
+  .hero-bg-about {
+    background-image: url('https://images.unsplash.com/photo-1565087836963-3add37e5c3f7?w=1400&q=80&auto=format');
+  }
+  .hero-bg-products {
+    background-image: url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80&auto=format');
+  }
+  .hero-content { position: relative; z-index: 1; color: var(--white); padding: 0 20px; }
+  .hero-content h1 {
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 900;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+  .hero-content p {
+    font-size: 16px;
+    opacity: 0.85;
+    margin-bottom: 6px;
+  }
+  .hero-content .since {
+    font-size: 14px;
+    opacity: 0.6;
+    letter-spacing: 2px;
+  }
+  .hero-small { height: 280px; }
+  .hero-small .hero-content h1 { font-size: clamp(24px, 4vw, 36px); }
+
+  /* ===== SECTION ===== */
+  section { padding: 80px 24px; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .section-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 48px;
+    letter-spacing: 1px;
+  }
+  .section-title::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: var(--black);
+    margin: 12px auto 0;
+  }
+
+  /* ===== STATS ===== */
+  .stats-bar {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    margin: -60px 24px 0;
+    position: relative;
+    z-index: 10;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    transform: translateY(-50px);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .stat-item {
+    padding: 36px 24px;
+    text-align: center;
+    border-right: 1px solid var(--gray-border);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-number {
+    font-size: 42px;
+    font-weight: 900;
+    color: var(--black);
+    line-height: 1;
+    margin-bottom: 10px;
+    font-family: 'Noto Serif KR', serif;
+  }
+  .stat-label { font-size: 13px; color: var(--gray-mid); }
+
+  /* ===== CERTS ===== */
+  .cert-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .cert-card {
+    border: 1px solid var(--gray-border);
+    padding: 40px 24px;
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .cert-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  .cert-logo {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .cert-org { font-size: 13px; color: var(--gray-mid); margin-bottom: 6px; }
+  .cert-name { font-size: 15px; font-weight: 700; }
+
+  /* ===== PATENTS ===== */
+  .patent-section { background: var(--bg-light); }
+  .patent-list { max-width: 700px; margin: 0 auto; }
+  .patent-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--gray-border);
+    font-size: 14px;
+    gap: 16px;
+  }
+  .patent-row:last-child { border-bottom: none; }
+  .patent-year { color: var(--gray-light); font-size: 12px; width: 40px; flex-shrink: 0; }
+  .patent-name { flex: 1; color: var(--gray-dark); }
+  .patent-num { color: var(--gray-light); font-size: 12px; text-align: right; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--black);
+    color: #888;
+    padding: 48px 24px;
+    font-size: 13px;
+  }
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+  }
+  .footer-col h4 { color: #ccc; font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .footer-col p { margin-bottom: 6px; line-height: 1.7; }
+  .footer-bottom {
+    max-width: 1100px;
+    margin: 24px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid #2a2a2a;
+    color: #555;
+    font-size: 12px;
+  }
+
+  /* ===== ABOUT PAGE ===== */
+  .tabs-bar {
+    background: var(--white);
+    border-bottom: 2px solid var(--gray-border);
+    position: sticky;
+    top: 64px;
+    z-index: 50;
+  }
+  .tabs-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+  }
+  .tab-btn {
+    padding: 16px 28px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-mid);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .tab-btn:hover { color: var(--black); }
+  .tab-btn.active {
+    color: var(--black);
+    border-bottom-color: var(--black);
+    font-weight: 700;
+  }
+
+  .tab-section { display: none; }
+  .tab-section.active { display: block; }
+
+  /* Greeting */
+  .greeting-content {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .greeting-logo {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin-bottom: 32px;
+    font-family: 'Noto Serif KR', serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .greeting-text { font-size: 15px; color: var(--gray-dark); line-height: 2.0; margin-bottom: 12px; }
+  .greeting-sign { font-size: 14px; font-weight: 600; margin-top: 32px; color: var(--black); }
+
+  /* Timeline */
+  .timeline { max-width: 700px; margin: 0 auto; }
+  .timeline-row {
+    display: flex;
+    gap: 32px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--gray-border);
+    font-size: 14px;
+    align-items: baseline;
+  }
+  .timeline-row:last-child { border-bottom: none; }
+  .timeline-year { color: var(--gray-light); font-size: 12px; width: 48px; flex-shrink: 0; font-weight: 600; }
+  .timeline-event { color: var(--gray-dark); flex: 1; }
+
+  /* Contact cards */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .contact-card {
+    border: 1px solid var(--gray-border);
+    padding: 40px 24px;
+    text-align: center;
+  }
+  .contact-icon { font-size: 36px; margin-bottom: 12px; display: block; }
+  .contact-type { font-size: 12px; color: var(--gray-light); margin-bottom: 8px; }
+  .contact-value { font-size: 14px; font-weight: 500; color: var(--black); }
+
+  /* Map */
+  .map-section { background: var(--bg-light); }
+  .map-address {
+    text-align: center;
+    font-size: 15px;
+    color: var(--gray-dark);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .map-placeholder {
+    max-width: 800px;
+    margin: 0 auto;
+    height: 360px;
+    background: #ddd;
+    border: 1px solid var(--gray-border);
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .map-placeholder iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* ===== PRODUCTS PAGE ===== */
+  .products-tabs-bar {
+    background: var(--white);
+    border-bottom: 2px solid var(--gray-border);
+    position: sticky;
+    top: 64px;
+    z-index: 50;
+  }
+  .product-section-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--black);
+    display: inline-block;
+  }
+  .product-category { margin-bottom: 56px; }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .product-card {
+    border: 1px solid var(--gray-border);
+    background: var(--bg-light);
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .product-card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+  .product-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    overflow: hidden;
+  }
+  .product-img img { width: 100%; height: 100%; object-fit: cover; }
+  .product-name {
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--gray-dark);
+    text-align: center;
+    background: var(--white);
+    border-top: 1px solid var(--gray-border);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .cert-grid, .contact-grid { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr; gap: 24px; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-bar { grid-template-columns: 1fr; }
+    .stat-item { border-right: none; border-bottom: 1px solid var(--gray-border); }
+    nav { gap: 20px; }
+    nav a { font-size: 13px; }
+    .tabs-inner { overflow-x: auto; }
+    .tab-btn { padding: 14px 16px; white-space: nowrap; }
+  }
+  @media (max-width: 480px) {
+    .top-bar-inner { gap: 12px; font-size: 11px; }
+    .hero-content h1 { font-size: 24px; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <span><span class="icon">📞</span> Phone&nbsp; 031) 573 – 5547 · 031) 573 – 5548</span>
+    <span><span class="icon">📠</span> FAX&nbsp; 031)571 – 3567</span>
+    <span><span class="icon">✉</span> Email&nbsp; sekwangfastener@gmail.com</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a class="logo" onclick="showPage('home')">
+      <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="17" stroke="#111" stroke-width="1.5"/>
+        <circle cx="18" cy="18" r="8" stroke="#111" stroke-width="1.5"/>
+        <circle cx="18" cy="18" r="3" fill="#111"/>
+        <line x1="18" y1="1" x2="18" y2="10" stroke="#111" stroke-width="1.5"/>
+        <line x1="18" y1="26" x2="18" y2="35" stroke="#111" stroke-width="1.5"/>
+        <line x1="1" y1="18" x2="10" y2="18" stroke="#111" stroke-width="1.5"/>
+        <line x1="26" y1="18" x2="35" y2="18" stroke="#111" stroke-width="1.5"/>
+      </svg>
+      <span class="logo-text">세 광 정 밀</span>
+    </a>
+    <nav>
+      <a id="nav-about" onclick="showPage('about')">회사 소개</a>
+      <a id="nav-products" onclick="showPage('products')">제품</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HOME PAGE ============ -->
+<div id="page-home" class="page active">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-bg hero-bg-home"></div>
+    <div class="hero-content">
+      <h1>40년 장인정신으로<br>최고의 품질을 약속합니다</h1>
+      <p>특수 볼트 전문 기업 세광정밀</p>
+      <p class="since">Since 1998</p>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="container">
+    <div class="stats-bar fade-in">
+      <div class="stat-item">
+        <div class="stat-number">10+</div>
+        <div class="stat-label">특허·실용신안·의장등록</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">1,000+</div>
+        <div class="stat-label">제품 종류</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">300+</div>
+        <div class="stat-label">거래 기업</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certs -->
+  <section style="padding-top: 40px;">
+    <div class="container">
+      <h2 class="section-title fade-in">인증</h2>
+      <div class="cert-grid">
+        <div class="cert-card fade-in">
+          <span class="cert-logo">🏆</span>
+          <div class="cert-org">경기도 중소기업 CEO 연합회</div>
+          <div class="cert-name">인증기업</div>
+        </div>
+        <div class="cert-card fade-in">
+          <span class="cert-logo">🤝</span>
+          <div class="cert-org">(사)중소기업융합경기연합회</div>
+          <div class="cert-name">융합회원사</div>
+        </div>
+        <div class="cert-card fade-in">
+          <span class="cert-logo">📊</span>
+          <div class="cert-org">한국기업데이터</div>
+          <div class="cert-name">2020 기술역량 우수기업 인증</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Patents -->
+  <section class="patent-section">
+    <div class="container">
+      <h2 class="section-title fade-in">특허·실용신안·의장등록</h2>
+      <div class="patent-list">
+        <div class="patent-row fade-in"><span class="patent-year">2016</span><span class="patent-name">가공물의 언더컷 성형장치</span><span class="patent-num">제 10-1606671 호</span></div>
+        <div class="patent-row fade-in"><span class="patent-year">2016</span><span class="patent-name">스위치용 핀 성형장치</span><span class="patent-num">제 10-1689477 호</span></div>
+        <div class="patent-row fade-in"><span class="patent-year">2005</span><span class="patent-name">가구용 직결볼트</span><span class="patent-num">제 0382746 호</span></div>
+        <div class="patent-row fade-in"><span class="patent-year">2005</span><span class="patent-name">이동용 캐스터의 바퀴축 구조</span><span class="patent-num">제 0402400 호</span></div>
+        <div class="patent-row fade-in"><span class="patent-year">2005</span><span class="patent-name">행거용 지지구</span><span class="patent-num">제 0378873 호</span></div>
+        <div class="patent-row fade-in"><span class="patent-year">2005</span><span class="patent-name">이동용 캐스터</span><span class="patent-num">제 0382364 호</span></div>
+        <div class="patent-row fade-in"><span class="patent-year">2004</span><span class="patent-name">체결편의 홈 가공공형</span><span class="patent-num">제 0363616 호</span></div>
+        <div class="patent-row fade-in"><span class="patent-year">2004</span><span class="patent-name">볼트성형용 금형</span><span class="patent-num">제 0367317 호</span></div>
+        <div class="patent-row fade-in"><span class="patent-year">2004</span><span class="patent-name">가구용 연결볼트 및 그 성형기</span><span class="patent-num">제 0345416 호</span></div>
+        <div class="patent-row fade-in"><span class="patent-year">2004</span><span class="patent-name">가구용 연결볼트 및 그 성형기</span><span class="patent-num">제 0345415 호</span></div>
+        <div class="patent-row fade-in"><span class="patent-year">2004</span><span class="patent-name">가구용 연결볼트 및 그 성형기</span><span class="patent-num">제 0345414 호</span></div>
+        <div class="patent-row fade-in"><span class="patent-year">1999</span><span class="patent-name">문짝 설치용 볼트의 조정홈 가공을 위한 돌망금형</span><span class="patent-num">제 0161943 호</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>본사</h4>
+        <p>경기도 남양주시 진접읍 부마로 54-16</p>
+        <p style="margin-top:12px; color:#555;">ⓒ 세광정밀 All rights reserved.</p>
+      </div>
+      <div class="footer-col">
+        <h4>연락처</h4>
+        <p>Fax&nbsp; 031)571 – 3567</p>
+        <p>Tel&nbsp; 031) 573 – 5547 | 031) 573 – 5548</p>
+        <p>E-Mail&nbsp; sekwangfastener@gmail.com</p>
+      </div>
+      <div class="footer-col">
+        <h4>업무 시간</h4>
+        <p>평일: 09:00 – 18:00</p>
+        <p>주말 및 공휴일 휴무</p>
+      </div>
+    </div>
+    <div class="footer-bottom">ⓒ 세광정밀 All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ============ ABOUT PAGE ============ -->
+<div id="page-about" class="page">
+  <!-- Hero -->
+  <div class="hero hero-small">
+    <div class="hero-bg hero-bg-about"></div>
+    <div class="hero-content">
+      <h1>회사 소개</h1>
+      <p>최고의 품질과 기술력으로 고객의 신뢰에 보탑합니다</p>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-bar">
+    <div class="tabs-inner">
+      <button class="tab-btn active" onclick="showTab('greeting', this)">인사말</button>
+      <button class="tab-btn" onclick="showTab('history', this)">연혁</button>
+      <button class="tab-btn" onclick="showTab('contact', this)">연락처</button>
+      <button class="tab-btn" onclick="showTab('directions', this)">오시는 길</button>
+    </div>
+  </div>
+
+  <!-- 인사말 -->
+  <div id="tab-greeting" class="tab-section active">
+    <section>
+      <div class="container">
+        <div class="greeting-content">
+          <div class="greeting-logo">
+            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+              <circle cx="18" cy="18" r="17" stroke="#111" stroke-width="1.5"/>
+              <circle cx="18" cy="18" r="8" stroke="#111" stroke-width="1.5"/>
+              <circle cx="18" cy="18" r="3" fill="#111"/>
+              <line x1="18" y1="1" x2="18" y2="10" stroke="#111" stroke-width="1.5"/>
+              <line x1="18" y1="26" x2="18" y2="35" stroke="#111" stroke-width="1.5"/>
+              <line x1="1" y1="18" x2="10" y2="18" stroke="#111" stroke-width="1.5"/>
+              <line x1="26" y1="18" x2="35" y2="18" stroke="#111" stroke-width="1.5"/>
+            </svg>
+            세 광 정 밀
+          </div>
+          <p class="greeting-text">세광정밀에 방문해 주셔서 감사합니다.</p>
+          <p class="greeting-text">저희 세광정밀은 1998년 설립 이래로 40년의 경력과 노하우로<br>고객 신뢰를 우선으로 생각하며, 최고 품질의 제품을 제공하고 있습니다.</p>
+          <p class="greeting-text">맞춤형 볼트 및 리벳 부터 일반형 피스, 너트, 볼트, 핀, 홈 가공 까지<br>고객 요구에 최적화된 맞춤형 제품을 제공합니다.</p>
+          <p class="greeting-text">항상 고객 감동과 최고의 품질을 제공하기 위해 최선을 다해 앞장서는 기업이 되겠습니다.</p>
+          <div class="greeting-sign">세광정밀 대표 이승구</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 연혁 -->
+  <div id="tab-history" class="tab-section">
+    <section>
+      <div class="container">
+        <h2 class="section-title">연혁</h2>
+        <div class="timeline">
+          <div class="timeline-row"><span class="timeline-year">1998</span><span class="timeline-event">세광정밀 설립</span></div>
+          <div class="timeline-row"><span class="timeline-year">2008</span><span class="timeline-event">경기동부공공의료소 회원</span></div>
+          <div class="timeline-row"><span class="timeline-year">2018</span><span class="timeline-event">일자리 창출 기여 경기도지사의장 표창장</span></div>
+          <div class="timeline-row"><span class="timeline-year">2018</span><span class="timeline-event">일자리 창출 기여 국회의원 표창장</span></div>
+          <div class="timeline-row"><span class="timeline-year">2019</span><span class="timeline-event">경기도중소기업CEO연합회 인증기업</span></div>
+          <div class="timeline-row"><span class="timeline-year">2019</span><span class="timeline-event">경기도중소기업CEO연합회 표창장</span></div>
+          <div class="timeline-row"><span class="timeline-year">2019</span><span class="timeline-event">중소기업융합경기연합회 융합회원사</span></div>
+          <div class="timeline-row"><span class="timeline-year">2020</span><span class="timeline-event">한국기업데이터 기술역량 우수기업 인증</span></div>
+          <div class="timeline-row"><span class="timeline-year">2021</span><span class="timeline-event">지역경제 활성화 경기도지사 표창장</span></div>
+          <div class="timeline-row"><span class="timeline-year">2021</span><span class="timeline-event">지역경제 활성화 남양주시장 표창장</span></div>
+          <div class="timeline-row"><span class="timeline-year">2023</span><span class="timeline-event">경기도 중소기업 벤처기업 청장 표창장</span></div>
+          <div class="timeline-row"><span class="timeline-year">2023</span><span class="timeline-event">경기도중소기업CEO연합회 남양주 지회 11대·12대 회장 역임</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 연락처 -->
+  <div id="tab-contact" class="tab-section">
+    <section>
+      <div class="container">
+        <h2 class="section-title">연락처</h2>
+        <div class="contact-grid">
+          <div class="contact-card">
+            <span class="contact-icon">✉️</span>
+            <div class="contact-type">E-mail</div>
+            <div class="contact-value">sekwangfastener@gmail.com</div>
+          </div>
+          <div class="contact-card">
+            <span class="contact-icon">📞</span>
+            <div class="contact-type">대표전화</div>
+            <div class="contact-value">031) 573 – 5547<br>031) 573 – 5548</div>
+          </div>
+          <div class="contact-card">
+            <span class="contact-icon">📠</span>
+            <div class="contact-type">Fax</div>
+            <div class="contact-value">031) 571 – 3567</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 오시는 길 -->
+  <div id="tab-directions" class="tab-section">
+    <section class="map-section">
+      <div class="container">
+        <h2 class="section-title">오시는 길</h2>
+        <div class="map-address">
+          <span>📍</span> 경기도 남양주시 진접읍 부마로 54-16
+        </div>
+        <div class="map-placeholder">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3157.0!2d127.178!3d37.738!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357cb6e9c6e0e0e1%3A0x0!2z6rK96re4!5e0!3m2!1sko!2skr!4v1"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>본사</h4>
+        <p>경기도 남양주시 진접읍 부마로 54-16</p>
+      </div>
+      <div class="footer-col">
+        <h4>연락처</h4>
+        <p>Fax&nbsp; 031)571 – 3567</p>
+        <p>Tel&nbsp; 031) 573 – 5547 | 031) 573 – 5548</p>
+        <p>E-Mail&nbsp; sekwangfastener@gmail.com</p>
+      </div>
+      <div class="footer-col">
+        <h4>업무 시간</h4>
+        <p>평일: 09:00 – 18:00</p>
+        <p>주말 및 공휴일 휴무</p>
+      </div>
+    </div>
+    <div class="footer-bottom">ⓒ 세광정밀 All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ============ PRODUCTS PAGE ============ -->
+<div id="page-products" class="page">
+  <div class="hero hero-small">
+    <div class="hero-bg hero-bg-products"></div>
+    <div class="hero-content">
+      <h1>제품</h1>
+      <p>맞춤형 볼트, 리벳 부터 일반형 피스, 너트, 볼트, 핀, 홈 가공 까지<br>고객 요구에 최적화된 맞춤형 제품을 제공합니다</p>
+    </div>
+  </div>
+
+  <!-- Product Category Tabs -->
+  <div class="products-tabs-bar">
+    <div class="tabs-inner">
+      <button class="tab-btn active" onclick="showProductTab('bolts', this)">볼트</button>
+      <button class="tab-btn" onclick="showProductTab('nuts', this)">너트</button>
+      <button class="tab-btn" onclick="showProductTab('screws', this)">스크류</button>
+      <button class="tab-btn" onclick="showProductTab('rivets', this)">리벳</button>
+      <button class="tab-btn" onclick="showProductTab('washers', this)">와셔</button>
+    </div>
+  </div>
+
+  <section>
+    <div class="container">
+
+      <!-- 볼트 -->
+      <div id="ptab-bolts" class="tab-section active">
+        <div class="product-category">
+          <div class="product-section-title">볼트</div>
+          <div class="product-grid">
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">연결볼트 6×10</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">연결볼트 6×15</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">연결볼트 6×30</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">연결볼트 6×50</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">연결볼트 6×60</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">연결볼트 6×65</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 너트 -->
+      <div id="ptab-nuts" class="tab-section">
+        <div class="product-category">
+          <div class="product-section-title">너트</div>
+          <div class="product-grid">
+            <div class="product-card"><div class="product-img">🔧</div><div class="product-name">연결너트 8×15</div></div>
+            <div class="product-card"><div class="product-img">🔧</div><div class="product-name">연결너트 8×25</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 스크류 -->
+      <div id="ptab-screws" class="tab-section">
+        <div class="product-category">
+          <div class="product-section-title">스크류</div>
+          <div class="product-grid">
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">침시마리 태핑피스 4×13</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">침시마리 태핑피스 4×32</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">침시마리 태핑피스 4×50</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">침시마리 태핑피스 4×100</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">둥근마리 이도피스 5×13</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">둥근마리 이도피스 5×32</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">둥근마리 이도피스 5×50</div></div>
+            <div class="product-card"><div class="product-img">🔩</div><div class="product-name">둥근마리 이도피스 5×13</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 리벳 -->
+      <div id="ptab-rivets" class="tab-section">
+        <div class="product-category">
+          <div class="product-section-title">리벳</div>
+          <div class="product-grid">
+            <div class="product-card"><div class="product-img">⚙️</div><div class="product-name">연결너트 8×15</div></div>
+            <div class="product-card"><div class="product-img">⚙️</div><div class="product-name">연결너트 8×15</div></div>
+            <div class="product-card"><div class="product-img">⚙️</div><div class="product-name">연결볼트</div></div>
+            <div class="product-card"><div class="product-img">⚙️</div><div class="product-name">연결볼트</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 와셔 -->
+      <div id="ptab-washers" class="tab-section">
+        <div class="product-category">
+          <div class="product-section-title">와셔</div>
+          <div class="product-grid">
+            <div class="product-card"><div class="product-img">⭕</div><div class="product-name">연결너트 8×15</div></div>
+            <div class="product-card"><div class="product-img">⭕</div><div class="product-name">연결너트 8×15</div></div>
+            <div class="product-card"><div class="product-img">⭕</div><div class="product-name">연결볼트</div></div>
+            <div class="product-card"><div class="product-img">⭕</div><div class="product-name">연결볼트</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>본사</h4>
+        <p>경기도 남양주시 진접읍 부마로 54-16</p>
+      </div>
+      <div class="footer-col">
+        <h4>연락처</h4>
+        <p>Fax&nbsp; 031)571 – 3567</p>
+        <p>Tel&nbsp; 031) 573 – 5547 | 031) 573 – 5548</p>
+        <p>E-Mail&nbsp; sekwangfastener@gmail.com</p>
+      </div>
+      <div class="footer-col">
+        <h4>업무 시간</h4>
+        <p>평일: 09:00 – 18:00</p>
+        <p>주말 및 공휴일 휴무</p>
+      </div>
+    </div>
+    <div class="footer-bottom">ⓒ 세광정밀 All rights reserved.</div>
+  </footer>
+</div>
+
+<script>
+  // Page navigation
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    if (page === 'about') document.getElementById('nav-about').classList.add('active');
+    if (page === 'products') document.getElementById('nav-products').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    initFadeIn();
+  }
+
+  // Tab navigation (about)
+  function showTab(tab, btn) {
+    document.querySelectorAll('#page-about .tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('#page-about .tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Tab navigation (products)
+  function showProductTab(tab, btn) {
+    document.querySelectorAll('#page-products .tab-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('#page-products .tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('ptab-' + tab).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Scroll fade-in
+  function initFadeIn() {
+    const els = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    els.forEach(el => observer.observe(el));
+  }
+
+  initFadeIn();
+</script>
+</body>
+</html>
