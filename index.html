@@ -399,7 +399,8 @@
     font-weight: 800;
     line-height: 1;
     display: block;
-    margin: 0 0 60px 0;
+    margin: 0;
+    padding-bottom: 80px;
   }
   .product-category { margin-bottom: 56px; }
 
@@ -810,10 +811,19 @@
   function scrollToSection(id, page) {
     const el = document.getElementById(id);
     if (!el) return;
-    // Temporarily disable scroll spy to avoid conflict
+
+    // Immediately set the clicked tab as active for instant feedback
+    const tabsBarId = page === 'about' ? 'about-tabs-bar' : 'products-tabs-bar';
+    const tabsBar = document.getElementById(tabsBarId);
+    if (tabsBar) {
+      tabsBar.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.target === id);
+      });
+    }
+
+    // Temporarily disable scroll spy to avoid conflict during smooth scroll
     isTabClicking = true;
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // Re-enable scroll spy after scroll settles
     clearTimeout(scrollClickTimer);
     scrollClickTimer = setTimeout(() => { isTabClicking = false; }, 800);
   }
