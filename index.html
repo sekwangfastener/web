@@ -255,7 +255,10 @@
     opacity: 0.6;
     letter-spacing: 2px;
   }
-  .hero-small { height: 280px; }
+  .hero-small {
+    height: 340px;
+    padding-bottom: 0;
+  }
   .hero-small .hero-content h1 { font-size: clamp(24px, 4vw, 36px); }
 
   /* ===== SECTION ===== */
@@ -569,6 +572,7 @@
     .tabs-inner { overflow-x: auto; }
     .tab-btn { padding: 14px 16px; white-space: nowrap; }
     .hero { height: 580px; }
+    .hero.hero-small { height: 280px !important; }
 
     /* Mobile nav - slides DOWN from top */
     .hamburger { display: flex; }
