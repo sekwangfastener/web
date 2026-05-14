@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta name="google-site-verification" content="p_JPULDR4WV5ADLFDQAdC-oAmWllBCX6NrhzIrg097o" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="format-detection" content="telephone=no">
@@ -182,64 +181,64 @@
   }
   .hero-bg-home-1 {
     background-image: url('https://res.cloudinary.com/dhcbbnwkg/image/upload/v1778641186/hero-1_gcqzg0.png');
-    animation: heroFade1 25s infinite;
+    animation: heroFade1 20s infinite;
   }
   .hero-bg-home-2 {
     background-image: url('https://res.cloudinary.com/dhcbbnwkg/image/upload/v1778641186/hero-2_zlteeo.png');
-    animation: heroFade2 25s infinite;
+    animation: heroFade2 20s infinite;
     opacity: 0;
   }
   .hero-bg-home-3 {
     background-image: url('https://res.cloudinary.com/dhcbbnwkg/image/upload/v1778641186/hero-3_ixz5f6.png');
-    animation: heroFade3 25s infinite;
+    animation: heroFade3 20s infinite;
     opacity: 0;
   }
   .hero-bg-home-4 {
     background-image: url('https://res.cloudinary.com/dhcbbnwkg/image/upload/v1778641528/hero-4_ufmv4x.png');
-    animation: heroFade4 25s infinite;
+    animation: heroFade4 20s infinite;
     opacity: 0;
   }
   .hero-bg-home-5 {
     background-image: url('https://res.cloudinary.com/dhcbbnwkg/image/upload/v1778641528/hero-5_g8w8pn.png');
-    animation: heroFade5 25s infinite;
+    animation: heroFade5 20s infinite;
     opacity: 0;
   }
   @keyframes heroFade1 {
     0%   { opacity: 0.35; }
-    17%  { opacity: 0.35; }
+    17.5%{ opacity: 0.35; }
     20%  { opacity: 0; }
-    97%  { opacity: 0; }
+    97.5%{ opacity: 0; }
     100% { opacity: 0.35; }
   }
   @keyframes heroFade2 {
     0%   { opacity: 0; }
-    17%  { opacity: 0; }
+    17.5%{ opacity: 0; }
     20%  { opacity: 0.35; }
-    37%  { opacity: 0.35; }
+    37.5%{ opacity: 0.35; }
     40%  { opacity: 0; }
     100% { opacity: 0; }
   }
   @keyframes heroFade3 {
     0%   { opacity: 0; }
-    37%  { opacity: 0; }
+    37.5%{ opacity: 0; }
     40%  { opacity: 0.35; }
-    57%  { opacity: 0.35; }
+    57.5%{ opacity: 0.35; }
     60%  { opacity: 0; }
     100% { opacity: 0; }
   }
   @keyframes heroFade4 {
     0%   { opacity: 0; }
-    57%  { opacity: 0; }
+    57.5%{ opacity: 0; }
     60%  { opacity: 0.35; }
-    77%  { opacity: 0.35; }
+    77.5%{ opacity: 0.35; }
     80%  { opacity: 0; }
     100% { opacity: 0; }
   }
   @keyframes heroFade5 {
     0%   { opacity: 0; }
-    77%  { opacity: 0; }
+    77.5%{ opacity: 0; }
     80%  { opacity: 0.35; }
-    97%  { opacity: 0.35; }
+    97.5%{ opacity: 0.35; }
     100% { opacity: 0; }
   }
 
@@ -253,8 +252,8 @@
   .hero-content h1 {
     font-size: clamp(28px, 5vw, 46px);
     font-weight: 700;
-    line-height: 1.25;
-    margin-bottom: 16px;
+    line-height: 1.4;
+    margin-bottom: 40px;
     letter-spacing: -0.5px;
     word-break: keep-all;
     overflow-wrap: break-word;
@@ -643,7 +642,42 @@
     .product-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
-  /* ===== ANIMATIONS ===== */
+  /* ===== HERO TEXT SLIDES ===== */
+  .hero-text-wrap {
+    position: relative;
+    width: 100%;
+    height: 200px;
+  }
+  .hero-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    pointer-events: none;
+    box-sizing: border-box;
+  }
+  .hero-text.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .hero-contact-label {
+    font-size: 15px;
+    opacity: 0.8;
+    margin-bottom: 6px !important;
+    letter-spacing: 2px;
+  }
+  .hero-contact-num {
+    font-size: 18px;
+    opacity: 0.9;
+    margin-bottom: 4px !important;
+    letter-spacing: 1px;
+  }
   .fade-in {
     opacity: 0;
     transform: translateY(20px);
@@ -696,10 +730,20 @@
     <div class="hero-bg hero-bg-home-3"></div>
     <div class="hero-bg hero-bg-home-4"></div>
     <div class="hero-bg hero-bg-home-5"></div>
-    <div class="hero-content">
-      <h1>40년 장인정신으로<br>최고의 품질을 약속합니다</h1>
-      <p>특수 볼트 전문 기업 세광정밀</p>
-      <p class="since">Since 1998</p>
+    <div class="hero-content hero-text-wrap">
+      <!-- 텍스트 1 -->
+      <div class="hero-text active" id="hero-text-1">
+        <h1>40년 장인정신으로<br>최고의 품질을 약속합니다</h1>
+        <p>특수 볼트 전문 기업 세광정밀</p>
+        <p class="since">Since 1998</p>
+      </div>
+      <!-- 텍스트 2 -->
+      <div class="hero-text" id="hero-text-2">
+        <h1>남양주 특수 화스너<br>초정밀 특수 가공 전문</h1>
+        <p class="hero-contact-label">문의전화</p>
+        <p class="hero-contact-num">031) 573 – 5547</p>
+        <p class="hero-contact-num">031) 573 – 5548</p>
+      </div>
     </div>
   </div>
 
@@ -858,7 +902,7 @@
         </div>
         <div class="contact-card">
           <span class="contact-icon"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M35.8873 37.5832C32.3264 37.5832 28.7801 36.7904 25.2485 35.2049C21.7172 33.6197 18.4884 31.3639 15.5621 28.4376C12.6477 25.5113 10.3948 22.2813 8.8035 18.7475C7.21217 15.2138 6.4165 11.6687 6.4165 8.11234V6.4165H15.8935L17.5187 14.765L12.4349 19.7013C13.1893 21.0222 13.9966 22.2496 14.8567 23.3835C15.7172 24.5178 16.6268 25.555 17.5856 26.4952C18.5188 27.4519 19.5566 28.3555 20.6991 29.2062C21.8413 30.0572 23.1116 30.8752 24.5101 31.6601L29.5623 26.5199L37.5832 28.152V37.5832H35.8873ZM11.1337 17.0993L14.5643 13.8273L13.644 9.1665H9.19492C9.28873 10.5531 9.49727 11.9029 9.82055 13.2159C10.1438 14.5285 10.5815 15.823 11.1337 17.0993ZM27.0837 32.9435C28.2588 33.4864 29.5122 33.9136 30.8438 34.225C32.1755 34.5363 33.5052 34.7203 34.8332 34.7768V30.3731L30.4895 29.5023L27.0837 32.9435Z" fill="#605E68"/></svg></span>
-          <div class="contact-type">문의전화</div>
+          <div class="contact-type">대표전화</div>
           <div class="contact-value">031) 573 – 5547<br>031) 573 – 5548</div>
         </div>
         <div class="contact-card">
@@ -879,7 +923,7 @@
       </div>
       <div class="map-placeholder">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1415.404821258199!2d127.19948382065117!3d37.749798470281!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ccebcd7684049%3A0xcc0a6eff62b79f19!2z7IS46rSR7KCV67CA!5e1!3m2!1sko!2sus!4v1778593041152!5m2!1sko!2sus"
+          src="https://www.google.com/maps?q=37.749798,127.199484&hl=ko&z=17&output=embed"
           allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
         </iframe>
       </div>
@@ -1129,6 +1173,20 @@
   }
 
   initFadeIn();
+
+  // Hero 텍스트 4초마다 교체 (순차 페이드)
+  (function() {
+    const texts = document.querySelectorAll('#page-home .hero-text');
+    let current = 0;
+    setInterval(() => {
+      const prev = texts[current];
+      prev.classList.remove('active');           // 페이드 아웃 시작
+      setTimeout(() => {                         // 0.7s 후 페이드 인 시작
+        current = (current + 1) % texts.length;
+        texts[current].classList.add('active');
+      }, 700);
+    }, 4000);
+  })();
 </script>
 </body>
 </html>
