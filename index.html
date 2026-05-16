@@ -1009,11 +1009,19 @@
 
 <script>
   /**
+   * 브라우저 기본 스크롤 복원 비활성화
+   */
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
+  /**
    * 전역 상태 관리
    */
-  let isScrolling = false; // 탭 클릭에 의한 스크롤 중인지 여부
-  let currentObserver = null; // 현재 활성화된 Scroll Spy Observer
-  let savedScrollY = 0; // 모바일 메뉴 오픈 시 스크롤 위치 저장
+  let isScrolling = false; 
+  let currentObserver = null; 
+  let savedScrollY = 0; 
+  let scrollLockTimer = null;
 
   /**
    * 모바일 메뉴 관련
@@ -1034,7 +1042,6 @@
     nav.classList.add('open');
     document.body.classList.add('menu-open');
     
-    // 스크롤 고정
     document.body.style.position = 'fixed';
     document.body.style.top = `-${savedScrollY}px`;
     document.body.style.width = '100%';
@@ -1073,17 +1080,20 @@
     const targetPage = document.getElementById('page-' + pageId);
     if (!targetPage || targetPage.classList.contains('active')) return;
 
-    // 1. 모든 페이지 및 네비게이션 초기화
+    // 1. 상태 잠금 (이벤트 간섭 방지)
+    isScrolling = true;
+    clearTimeout(scrollLockTimer);
+
+    // 2. 초기화
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
 
-    // 2. 대상 페이지 활성화
+    // 3. 활성화
     targetPage.classList.add('active');
     const navLink = document.getElementById('nav-' + pageId);
     if (navLink) navLink.classList.add('active');
 
-    // 3. 서브 탭 초기화 (첫 번째 탭 활성화)
     const tabsBar = targetPage.querySelector('.tabs-bar');
     if (tabsBar) {
       const firstTab = tabsBar.querySelector('.tab-btn');
@@ -1093,12 +1103,15 @@
     // 4. 스크롤 최상단 이동
     window.scrollTo(0, 0);
 
-    // 5. 유틸리티 초기화
+    // 5. 유틸리티 재설정
     initFadeIn();
     
-    // 6. Scroll Spy 재설정 (약간의 지연을 두어 레이아웃 안정화 후 실행)
+    // 6. 감지기 재설정 (이미지 로드 및 레이아웃 안정을 위해 충분한 지연)
     if (currentObserver) currentObserver.disconnect();
-    setTimeout(() => initScrollSpy(pageId), 200);
+    setTimeout(() => {
+      initScrollSpy(pageId);
+      scrollLockTimer = setTimeout(() => { isScrolling = false; }, 500);
+    }, 300);
   }
 
   function scrollToSection(event, sectionId, pageId) {
@@ -1110,7 +1123,10 @@
     const section = document.getElementById(sectionId);
     if (!section) return;
 
-    // 탭 디자인 즉시 변경
+    isScrolling = true;
+    clearTimeout(scrollLockTimer);
+
+    // 탭 UI 즉시 반영
     const tabsBar = section.closest('.page').querySelector('.tabs-bar');
     if (tabsBar) {
       tabsBar.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1118,10 +1134,9 @@
       });
     }
 
-    // 스크롤 감지 일시 정지
-    isScrolling = true;
+    // 정확한 좌표 계산을 위한 강제 리플로우 유도
+    void section.offsetHeight;
 
-    // 목표 위치 계산 (offsetTop 합산으로 정확한 위치 파악)
     let offsetTop = 0;
     let tempEl = section;
     while (tempEl) {
@@ -1129,7 +1144,6 @@
       tempEl = tempEl.offsetParent;
     }
 
-    // 헤더 및 탭바 높이 고려 (약 120px)
     const finalY = Math.max(0, offsetTop - 120);
 
     window.scrollTo({
@@ -1137,12 +1151,12 @@
       behavior: 'smooth'
     });
 
-    // 스크롤 완료 후 감지 재개
-    setTimeout(() => { isScrolling = false; }, 1000);
+    scrollLockTimer = setTimeout(() => { isScrolling = false; }, 1000);
   }
 
   function initScrollSpy(pageId) {
     const page = document.getElementById('page-' + pageId);
+    if (!page) return;
     const tabsBar = page.querySelector('.tabs-bar');
     if (!tabsBar) return;
 
@@ -1185,11 +1199,10 @@
     document.querySelectorAll('.fade-in:not(.visible)').forEach(el => observer.observe(el));
   }
 
-  // 초기 실행
-  window.addEventListener('DOMContentLoaded', () => {
+  // 초기 실행 (모든 리소스 로드 후)
+  window.addEventListener('load', () => {
     initFadeIn();
     
-    // Hero 텍스트 순환
     const heroTexts = document.querySelectorAll('#page-home .hero-text');
     if (heroTexts.length > 0) {
       let currentIdx = 0;
