@@ -420,6 +420,7 @@
     letter-spacing: 0.5px;
     font-family: 'Pretendard', sans-serif;
     text-align: center;
+    touch-action: manipulation;
   }
   .tab-btn:hover { background: #F9F9F9; }
   .tab-btn.active {
@@ -829,10 +830,10 @@
   <!-- Sticky Tabs -->
   <div class="tabs-bar" id="about-tabs-bar">
     <div class="tabs-inner">
-      <button class="tab-btn active" data-target="sec-greeting" onclick="scrollToSection('sec-greeting', 'about')">인사말</button>
-      <button class="tab-btn" data-target="sec-history" onclick="scrollToSection('sec-history', 'about')">연혁</button>
-      <button class="tab-btn" data-target="sec-contact" onclick="scrollToSection('sec-contact', 'about')">연락처</button>
-      <button class="tab-btn" data-target="sec-directions" onclick="scrollToSection('sec-directions', 'about')">오시는 길</button>
+      <button type="button" class="tab-btn active" data-target="sec-greeting" onclick="scrollToSection(event, 'sec-greeting', 'about')">인사말</button>
+      <button type="button" class="tab-btn" data-target="sec-history" onclick="scrollToSection(event, 'sec-history', 'about')">연혁</button>
+      <button type="button" class="tab-btn" data-target="sec-contact" onclick="scrollToSection(event, 'sec-contact', 'about')">연락처</button>
+      <button type="button" class="tab-btn" data-target="sec-directions" onclick="scrollToSection(event, 'sec-directions', 'about')">오시는 길</button>
     </div>
   </div>
 
@@ -926,10 +927,10 @@
   <!-- Sticky Product Tabs -->
   <div class="tabs-bar" id="products-tabs-bar">
     <div class="tabs-inner">
-      <button class="tab-btn active" data-target="psec-bolts" onclick="scrollToSection('psec-bolts', 'products')">볼트</button>
-      <button class="tab-btn" data-target="psec-nuts" onclick="scrollToSection('psec-nuts', 'products')">너트</button>
-      <button class="tab-btn" data-target="psec-screws" onclick="scrollToSection('psec-screws', 'products')">스크류</button>
-      <button class="tab-btn" data-target="psec-minifix" onclick="scrollToSection('psec-minifix', 'products')">미니픽스/라픽스</button>
+      <button type="button" class="tab-btn active" data-target="psec-bolts" onclick="scrollToSection(event, 'psec-bolts', 'products')">볼트</button>
+      <button type="button" class="tab-btn" data-target="psec-nuts" onclick="scrollToSection(event, 'psec-nuts', 'products')">너트</button>
+      <button type="button" class="tab-btn" data-target="psec-screws" onclick="scrollToSection(event, 'psec-screws', 'products')">스크류</button>
+      <button type="button" class="tab-btn" data-target="psec-minifix" onclick="scrollToSection(event, 'psec-minifix', 'products')">미니픽스/라픽스</button>
     </div>
   </div>
 
@@ -1061,16 +1062,31 @@
   function showPage(page) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.tab-btn.active').forEach(btn => btn.classList.remove('active'));
+
     document.getElementById('page-' + page).classList.add('active');
-    if (page === 'about') document.getElementById('nav-about').classList.add('active');
-    if (page === 'products') document.getElementById('nav-products').classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (page === 'about') {
+      document.getElementById('nav-about').classList.add('active');
+      const aboutTabs = document.getElementById('about-tabs-bar');
+      if (aboutTabs) aboutTabs.querySelectorAll('.tab-btn')[0]?.classList.add('active');
+    }
+    if (page === 'products') {
+      document.getElementById('nav-products').classList.add('active');
+      const productTabs = document.getElementById('products-tabs-bar');
+      if (productTabs) productTabs.querySelectorAll('.tab-btn')[0]?.classList.add('active');
+    }
+    window.scrollTo({ top: 0, behavior: 'auto' });
     initFadeIn();
     setTimeout(() => initScrollSpy(page), 100);
   }
 
   // Scroll to section (tab click)
-  function scrollToSection(id, page) {
+  function scrollToSection(event, id, page) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
     const el = document.getElementById(id);
     if (!el) return;
 
@@ -1085,13 +1101,25 @@
 
     // Temporarily disable scroll spy to avoid conflict during smooth scroll
     isTabClicking = true;
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    // Calculate target position more reliably
+    const rect = el.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const targetY = rect.top + scrollTop - 120;
+    const y = Math.max(0, targetY);
+
+    window.scrollTo({
+      top: y,
+      behavior: 'smooth'
+    });
+
     clearTimeout(scrollClickTimer);
-    scrollClickTimer = setTimeout(() => { isTabClicking = false; }, 800);
+    scrollClickTimer = setTimeout(() => { isTabClicking = false; }, 1000);
   }
 
   let isTabClicking = false;
   let scrollClickTimer = null;
+  let currentObserver = null;
 
   // Scroll spy: highlight active tab based on scroll position
   function initScrollSpy(page) {
@@ -1110,7 +1138,11 @@
     const tabsBar = document.getElementById(tabsBarId);
     if (!tabsBar) return;
 
-    const observer = new IntersectionObserver((entries) => {
+    if (currentObserver) {
+      currentObserver.disconnect();
+    }
+
+    currentObserver = new IntersectionObserver((entries) => {
       if (isTabClicking) return;
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1125,7 +1157,7 @@
       threshold: 0
     });
 
-    sections.forEach(sec => observer.observe(sec));
+    sections.forEach(sec => currentObserver.observe(sec));
   }
 
   // Scroll fade-in
