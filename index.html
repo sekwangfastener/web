@@ -1059,9 +1059,14 @@
   }
 
   // Page navigation
+  let spyTimeout = null;
   function showPage(page) {
     const targetPage = document.getElementById('page-' + page);
     if (targetPage.classList.contains('active')) return;
+
+    // Block scroll spy during page transition
+    isTabClicking = true;
+    clearTimeout(scrollClickTimer);
 
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
@@ -1078,9 +1083,19 @@
       const productTabs = document.getElementById('products-tabs-bar');
       if (productTabs) productTabs.querySelectorAll('.tab-btn')[0]?.classList.add('active');
     }
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    
+    // Immediate scroll reset
+    window.scrollTo(0, 0);
+    
     initFadeIn();
-    setTimeout(() => initScrollSpy(page), 100);
+    
+    // Delay observer initialization and re-enable spy
+    clearTimeout(spyTimeout);
+    spyTimeout = setTimeout(() => {
+      initScrollSpy(page);
+      // Wait a bit more to ensure all initial intersection events are ignored
+      scrollClickTimer = setTimeout(() => { isTabClicking = false; }, 500);
+    }, 150);
   }
 
   // Scroll to section (tab click)
@@ -1093,7 +1108,7 @@
     const el = document.getElementById(id);
     if (!el) return;
 
-    // Immediately set the clicked tab as active for instant feedback
+    // Update UI immediately
     const tabsBarId = page === 'about' ? 'about-tabs-bar' : 'products-tabs-bar';
     const tabsBar = document.getElementById(tabsBarId);
     if (tabsBar) {
@@ -1102,21 +1117,25 @@
       });
     }
 
-    // Temporarily disable scroll spy to avoid conflict during smooth scroll
     isTabClicking = true;
+    clearTimeout(scrollClickTimer);
     
-    // Calculate target position more reliably
-    const rect = el.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const targetY = rect.top + scrollTop - 120;
-    const y = Math.max(0, targetY);
+    // Use offsetTop for more stable absolute positioning
+    let targetY = 0;
+    let currentEl = el;
+    while (currentEl) {
+      targetY += currentEl.offsetTop;
+      currentEl = currentEl.offsetParent;
+    }
+    
+    // Adjust for sticky header and tabs bar height (~120px)
+    const y = Math.max(0, targetY - 120);
 
     window.scrollTo({
       top: y,
       behavior: 'smooth'
     });
 
-    clearTimeout(scrollClickTimer);
     scrollClickTimer = setTimeout(() => { isTabClicking = false; }, 1000);
   }
 
