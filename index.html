@@ -589,7 +589,7 @@
     .hero { height: 580px; }
     .hero.hero-small { height: 280px !important; }
 
-    /* Mobile nav - slides DOWN from top */
+  /* Mobile nav - slides DOWN from top */
     .hamburger { display: flex; }
     nav#main-nav {
       position: fixed;
@@ -605,13 +605,15 @@
       transform: translateY(-100%);
       opacity: 0;
       pointer-events: none;
-      transition: transform 0.3s ease, opacity 0.2s ease;
+      visibility: hidden; /* 추가: 닫혀있을 때 클릭 방지 */
+      transition: transform 0.3s ease, opacity 0.2s ease, visibility 0.3s;
       z-index: 150;
     }
     nav#main-nav.open {
       transform: translateY(0);
       opacity: 1;
       pointer-events: auto;
+      visibility: visible; /* 추가: 열렸을 때만 클릭 허용 */
     }
     nav#main-nav a {
       padding: 22px 28px;
@@ -1009,22 +1011,19 @@
 
 <script>
   /**
-   * 브라우저 기본 스크롤 복원 비활성화
+   * 1. 브라우저 초기화 제어
    */
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
   }
 
-  /**
-   * 전역 상태 관리
-   */
-  let isScrolling = false; 
-  let currentObserver = null; 
-  let savedScrollY = 0; 
+  let isScrolling = false;
+  let currentObserver = null;
   let scrollLockTimer = null;
+  let savedScrollY = 0;
 
   /**
-   * 모바일 메뉴 관련
+   * 2. 모바일 메뉴 (간섭 최소화)
    */
   function toggleMenu() {
     const nav = document.getElementById('main-nav');
@@ -1033,7 +1032,8 @@
 
   function openMenu() {
     savedScrollY = window.scrollY;
-    const headerBottom = document.querySelector('header').getBoundingClientRect().bottom;
+    const header = document.querySelector('header');
+    const headerBottom = header.getBoundingClientRect().bottom;
     const nav = document.getElementById('main-nav');
     const hamburger = document.getElementById('hamburger');
 
@@ -1042,6 +1042,7 @@
     nav.classList.add('open');
     document.body.classList.add('menu-open');
     
+    // 모바일 스크롤 튀지 않게 고정
     document.body.style.position = 'fixed';
     document.body.style.top = `-${savedScrollY}px`;
     document.body.style.width = '100%';
@@ -1053,7 +1054,7 @@
   function closeMenu() {
     const nav = document.getElementById('main-nav');
     const hamburger = document.getElementById('hamburger');
-    if (!nav.classList.contains('open')) return;
+    if (!nav || !nav.classList.contains('open')) return;
 
     hamburger.classList.remove('open');
     nav.classList.remove('open');
@@ -1069,49 +1070,54 @@
   }
 
   function navClick(page) {
+    // 메뉴 닫기 전파 중단
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     closeMenu();
-    showPage(page);
+    // 약간의 시간차를 두어 메뉴 닫힘 애니메이션과 충돌 방지
+    setTimeout(() => showPage(page), 10);
   }
 
   /**
-   * 페이지 전환 및 탭 로직
+   * 3. 페이지 전환 및 섹션 이동
    */
   function showPage(pageId) {
     const targetPage = document.getElementById('page-' + pageId);
-    if (!targetPage || targetPage.classList.contains('active')) return;
+    if (!targetPage || (targetPage.classList.contains('active') && pageId !== 'home')) return;
 
-    // 1. 상태 잠금 (이벤트 간섭 방지)
+    // 스크롤 감지 잠금
     isScrolling = true;
     clearTimeout(scrollLockTimer);
 
-    // 2. 초기화
+    // 전체 상태 초기화
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
 
-    // 3. 활성화
+    // 페이지 활성화
     targetPage.classList.add('active');
     const navLink = document.getElementById('nav-' + pageId);
     if (navLink) navLink.classList.add('active');
 
+    // 서브 탭 초기화
     const tabsBar = targetPage.querySelector('.tabs-bar');
     if (tabsBar) {
       const firstTab = tabsBar.querySelector('.tab-btn');
       if (firstTab) firstTab.classList.add('active');
     }
 
-    // 4. 스크롤 최상단 이동
+    // 상단 이동 및 애니메이션
     window.scrollTo(0, 0);
-
-    // 5. 유틸리티 재설정
     initFadeIn();
     
-    // 6. 감지기 재설정 (이미지 로드 및 레이아웃 안정을 위해 충분한 지연)
+    // 레이아웃이 완전히 정착된 후 스파이 가동 (이미지 로딩 고려)
     if (currentObserver) currentObserver.disconnect();
     setTimeout(() => {
       initScrollSpy(pageId);
-      scrollLockTimer = setTimeout(() => { isScrolling = false; }, 500);
-    }, 300);
+      scrollLockTimer = setTimeout(() => { isScrolling = false; }, 600);
+    }, 400);
   }
 
   function scrollToSection(event, sectionId, pageId) {
@@ -1123,10 +1129,7 @@
     const section = document.getElementById(sectionId);
     if (!section) return;
 
-    isScrolling = true;
-    clearTimeout(scrollLockTimer);
-
-    // 탭 UI 즉시 반영
+    // 클릭한 탭 즉시 강조
     const tabsBar = section.closest('.page').querySelector('.tabs-bar');
     if (tabsBar) {
       tabsBar.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1134,9 +1137,11 @@
       });
     }
 
-    // 정확한 좌표 계산을 위한 강제 리플로우 유도
-    void section.offsetHeight;
+    // 감지기 잠금
+    isScrolling = true;
+    clearTimeout(scrollLockTimer);
 
+    // 실시간 위치 재계산 (이미지 로드 변수 대응)
     let offsetTop = 0;
     let tempEl = section;
     while (tempEl) {
@@ -1144,13 +1149,17 @@
       tempEl = tempEl.offsetParent;
     }
 
-    const finalY = Math.max(0, offsetTop - 120);
+    // 헤더 + 탭바 높이 보정
+    const headerHeight = document.querySelector('header').offsetHeight;
+    const tabsHeight = tabsBar ? tabsBar.offsetHeight : 0;
+    const y = Math.max(0, offsetTop - (headerHeight + tabsHeight + 10));
 
     window.scrollTo({
-      top: finalY,
+      top: y,
       behavior: 'smooth'
     });
 
+    // 스크롤이 끝날 즈음 잠금 해제
     scrollLockTimer = setTimeout(() => { isScrolling = false; }, 1000);
   }
 
@@ -1176,7 +1185,7 @@
         }
       });
     }, {
-      rootMargin: '-150px 0px -60% 0px',
+      rootMargin: '-20% 0px -70% 0px', // 모바일 대응 범위 조정
       threshold: 0
     });
 
@@ -1184,13 +1193,13 @@
   }
 
   /**
-   * 공통 애니메이션
+   * 4. 유틸리티
    */
   function initFadeIn() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry, i) => {
         if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          setTimeout(() => entry.target.classList.add('visible'), i * 60);
           observer.unobserve(entry.target);
         }
       });
@@ -1199,7 +1208,7 @@
     document.querySelectorAll('.fade-in:not(.visible)').forEach(el => observer.observe(el));
   }
 
-  // 초기 실행 (모든 리소스 로드 후)
+  // 전체 리소스 로드 후 실행
   window.addEventListener('load', () => {
     initFadeIn();
     
