@@ -1008,164 +1008,151 @@
 </div>
 
 <script>
-  // Mobile menu
-  let savedScrollY = 0;
+  /**
+   * 전역 상태 관리
+   */
+  let isScrolling = false; // 탭 클릭에 의한 스크롤 중인지 여부
+  let currentObserver = null; // 현재 활성화된 Scroll Spy Observer
+  let savedScrollY = 0; // 모바일 메뉴 오픈 시 스크롤 위치 저장
 
+  /**
+   * 모바일 메뉴 관련
+   */
   function toggleMenu() {
-    const isOpen = document.getElementById('main-nav').classList.contains('open');
-    if (isOpen) {
-      closeMenu();
-    } else {
-      openMenu();
-    }
+    const nav = document.getElementById('main-nav');
+    nav.classList.contains('open') ? closeMenu() : openMenu();
   }
+
   function openMenu() {
     savedScrollY = window.scrollY;
-    // Position menu right below the header's current bottom
     const headerBottom = document.querySelector('header').getBoundingClientRect().bottom;
-    document.getElementById('main-nav').style.top = `${headerBottom}px`;
-    document.getElementById('hamburger').classList.add('open');
-    document.getElementById('main-nav').classList.add('open');
+    const nav = document.getElementById('main-nav');
+    const hamburger = document.getElementById('hamburger');
+
+    nav.style.top = `${headerBottom}px`;
+    hamburger.classList.add('open');
+    nav.classList.add('open');
     document.body.classList.add('menu-open');
-    // Lock scroll position visually
+    
+    // 스크롤 고정
     document.body.style.position = 'fixed';
     document.body.style.top = `-${savedScrollY}px`;
     document.body.style.width = '100%';
-    // Close on scroll attempt
-    window.addEventListener('wheel', closeMenuOnScroll, { passive: true });
-    window.addEventListener('touchmove', closeMenuOnScroll, { passive: true });
+    
+    window.addEventListener('wheel', closeMenu, { passive: true });
+    window.addEventListener('touchmove', closeMenu, { passive: true });
   }
+
   function closeMenu() {
-    document.getElementById('hamburger').classList.remove('open');
-    document.getElementById('main-nav').classList.remove('open');
+    const nav = document.getElementById('main-nav');
+    const hamburger = document.getElementById('hamburger');
+    if (!nav.classList.contains('open')) return;
+
+    hamburger.classList.remove('open');
+    nav.classList.remove('open');
     document.body.classList.remove('menu-open');
-    // Restore scroll position
+    
     document.body.style.position = '';
     document.body.style.top = '';
     document.body.style.width = '';
     window.scrollTo(0, savedScrollY);
-    // Remove scroll listeners
-    window.removeEventListener('wheel', closeMenuOnScroll);
-    window.removeEventListener('touchmove', closeMenuOnScroll);
-  }
-  function closeMenuOnScroll() {
-    closeMenu();
+    
+    window.removeEventListener('wheel', closeMenu);
+    window.removeEventListener('touchmove', closeMenu);
   }
 
-  // Nav link click (closes mobile menu and navigates)
   function navClick(page) {
     closeMenu();
     showPage(page);
   }
 
-  // Page navigation
-  let spyTimeout = null;
-  function showPage(page) {
-    const targetPage = document.getElementById('page-' + page);
-    if (targetPage.classList.contains('active')) return;
+  /**
+   * 페이지 전환 및 탭 로직
+   */
+  function showPage(pageId) {
+    const targetPage = document.getElementById('page-' + pageId);
+    if (!targetPage || targetPage.classList.contains('active')) return;
 
-    // Block scroll spy during page transition
-    isTabClicking = true;
-    clearTimeout(scrollClickTimer);
-
+    // 1. 모든 페이지 및 네비게이션 초기화
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-    document.querySelectorAll('.tab-btn.active').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
 
+    // 2. 대상 페이지 활성화
     targetPage.classList.add('active');
-    if (page === 'about') {
-      document.getElementById('nav-about').classList.add('active');
-      const aboutTabs = document.getElementById('about-tabs-bar');
-      if (aboutTabs) aboutTabs.querySelectorAll('.tab-btn')[0]?.classList.add('active');
+    const navLink = document.getElementById('nav-' + pageId);
+    if (navLink) navLink.classList.add('active');
+
+    // 3. 서브 탭 초기화 (첫 번째 탭 활성화)
+    const tabsBar = targetPage.querySelector('.tabs-bar');
+    if (tabsBar) {
+      const firstTab = tabsBar.querySelector('.tab-btn');
+      if (firstTab) firstTab.classList.add('active');
     }
-    if (page === 'products') {
-      document.getElementById('nav-products').classList.add('active');
-      const productTabs = document.getElementById('products-tabs-bar');
-      if (productTabs) productTabs.querySelectorAll('.tab-btn')[0]?.classList.add('active');
-    }
-    
-    // Immediate scroll reset
+
+    // 4. 스크롤 최상단 이동
     window.scrollTo(0, 0);
-    
+
+    // 5. 유틸리티 초기화
     initFadeIn();
     
-    // Delay observer initialization and re-enable spy
-    clearTimeout(spyTimeout);
-    spyTimeout = setTimeout(() => {
-      initScrollSpy(page);
-      // Wait a bit more to ensure all initial intersection events are ignored
-      scrollClickTimer = setTimeout(() => { isTabClicking = false; }, 500);
-    }, 150);
+    // 6. Scroll Spy 재설정 (약간의 지연을 두어 레이아웃 안정화 후 실행)
+    if (currentObserver) currentObserver.disconnect();
+    setTimeout(() => initScrollSpy(pageId), 200);
   }
 
-  // Scroll to section (tab click)
-  function scrollToSection(event, id, page) {
+  function scrollToSection(event, sectionId, pageId) {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
     }
 
-    const el = document.getElementById(id);
-    if (!el) return;
+    const section = document.getElementById(sectionId);
+    if (!section) return;
 
-    // Update UI immediately
-    const tabsBarId = page === 'about' ? 'about-tabs-bar' : 'products-tabs-bar';
-    const tabsBar = document.getElementById(tabsBarId);
+    // 탭 디자인 즉시 변경
+    const tabsBar = section.closest('.page').querySelector('.tabs-bar');
     if (tabsBar) {
       tabsBar.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.target === id);
+        btn.classList.toggle('active', btn.dataset.target === sectionId);
       });
     }
 
-    isTabClicking = true;
-    clearTimeout(scrollClickTimer);
-    
-    // Use offsetTop for more stable absolute positioning
-    let targetY = 0;
-    let currentEl = el;
-    while (currentEl) {
-      targetY += currentEl.offsetTop;
-      currentEl = currentEl.offsetParent;
+    // 스크롤 감지 일시 정지
+    isScrolling = true;
+
+    // 목표 위치 계산 (offsetTop 합산으로 정확한 위치 파악)
+    let offsetTop = 0;
+    let tempEl = section;
+    while (tempEl) {
+      offsetTop += tempEl.offsetTop;
+      tempEl = tempEl.offsetParent;
     }
-    
-    // Adjust for sticky header and tabs bar height (~120px)
-    const y = Math.max(0, targetY - 120);
+
+    // 헤더 및 탭바 높이 고려 (약 120px)
+    const finalY = Math.max(0, offsetTop - 120);
 
     window.scrollTo({
-      top: y,
+      top: finalY,
       behavior: 'smooth'
     });
 
-    scrollClickTimer = setTimeout(() => { isTabClicking = false; }, 1000);
+    // 스크롤 완료 후 감지 재개
+    setTimeout(() => { isScrolling = false; }, 1000);
   }
 
-  let isTabClicking = false;
-  let scrollClickTimer = null;
-  let currentObserver = null;
-
-  // Scroll spy: highlight active tab based on scroll position
-  function initScrollSpy(page) {
-    const pageEl = document.getElementById('page-' + page);
-    if (!pageEl) return;
-
-    let sections, tabsBarId;
-    if (page === 'about') {
-      sections = pageEl.querySelectorAll('.scroll-section');
-      tabsBarId = 'about-tabs-bar';
-    } else if (page === 'products') {
-      sections = pageEl.querySelectorAll('.product-scroll-section');
-      tabsBarId = 'products-tabs-bar';
-    } else return;
-
-    const tabsBar = document.getElementById(tabsBarId);
+  function initScrollSpy(pageId) {
+    const page = document.getElementById('page-' + pageId);
+    const tabsBar = page.querySelector('.tabs-bar');
     if (!tabsBar) return;
 
-    if (currentObserver) {
-      currentObserver.disconnect();
-    }
+    const sections = pageId === 'about' 
+      ? page.querySelectorAll('.scroll-section') 
+      : page.querySelectorAll('.product-scroll-section');
 
     currentObserver = new IntersectionObserver((entries) => {
-      if (isTabClicking) return;
+      if (isScrolling) return;
+
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const id = entry.target.id;
@@ -1175,16 +1162,17 @@
         }
       });
     }, {
-      rootMargin: '-20% 0px -70% 0px',
+      rootMargin: '-150px 0px -60% 0px',
       threshold: 0
     });
 
-    sections.forEach(sec => currentObserver.observe(sec));
+    sections.forEach(s => currentObserver.observe(s));
   }
 
-  // Scroll fade-in
+  /**
+   * 공통 애니메이션
+   */
   function initFadeIn() {
-    const els = document.querySelectorAll('.fade-in:not(.visible)');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry, i) => {
         if (entry.isIntersecting) {
@@ -1193,21 +1181,25 @@
         }
       });
     }, { threshold: 0.1 });
-    els.forEach(el => observer.observe(el));
+    
+    document.querySelectorAll('.fade-in:not(.visible)').forEach(el => observer.observe(el));
   }
 
-  initFadeIn();
-
-  // Hero 텍스트 4초마다 교체 (배경과 동시 전환)
-  (function() {
-    const texts = document.querySelectorAll('#page-home .hero-text');
-    let current = 0;
-    setInterval(() => {
-      texts[current].classList.remove('active');
-      current = (current + 1) % texts.length;
-      texts[current].classList.add('active');
-    }, 4000);
-  })();
+  // 초기 실행
+  window.addEventListener('DOMContentLoaded', () => {
+    initFadeIn();
+    
+    // Hero 텍스트 순환
+    const heroTexts = document.querySelectorAll('#page-home .hero-text');
+    if (heroTexts.length > 0) {
+      let currentIdx = 0;
+      setInterval(() => {
+        heroTexts[currentIdx].classList.remove('active');
+        currentIdx = (currentIdx + 1) % heroTexts.length;
+        heroTexts[currentIdx].classList.add('active');
+      }, 4000);
+    }
+  });
 </script>
 </body>
 </html>
